@@ -1,0 +1,1 @@
+export const ADDRESS = process.env.REACT_APP_ADDRESS
