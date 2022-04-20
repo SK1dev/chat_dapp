@@ -1,6 +1,8 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
+import { AiOutlineSend } from "react-icons/ai";
+
 import {
   NavBar,
   ChatCard,
@@ -10,6 +12,7 @@ import {
 import { ethers } from "ethers";
 import { abi } from "./abi";
 import {ADDRESS} from './config'
+import './App.css'
 
 const CONTRACT_ADDRESS = ADDRESS
 
@@ -142,14 +145,17 @@ export function App(props) {
   const Messages = activeChatMessages
     ? activeChatMessages.map((message) => {
         let margin = "5%";
+        let backgroundColor = "#87b1db";
         let sender = activeChat.friendname;
         if (message.publicKey === myPublicKey) {
           margin = "15%";
+          backgroundColor = "#fff";
           sender = "You";
         }
         return (
           <Message
             marginLeft={margin}
+            backgroundColor={backgroundColor}
             sender={sender}
             data={message.data}
             timeStamp={message.timeStamp}
@@ -172,6 +178,8 @@ export function App(props) {
     : null;
 
   return (
+    <>
+    <div className="block_banner"></div>
     <Container style={{ padding: "0px", border: "1px solid grey" }}>
       {/* This shows the navbar with connect button */}
       <NavBar
@@ -181,10 +189,10 @@ export function App(props) {
       />
       <Row>
         {/* Here the friends list is shown */}
-        <Col style={{ paddingRight: "0px", borderRight: "2px solid #000000" }}>
+        <Col style={{ paddingRight: "0px", borderRight: "2px solid #5d5e5d" }}>
           <div
             style={{
-              backgroundColor: "#DCDCDC",
+              backgroundColor: "#e5e3de",
               height: "100%",
               overflowY: "auto",
             }}
@@ -208,7 +216,7 @@ export function App(props) {
           </div>
         </Col>
         <Col xs={8} style={{ paddingLeft: "0px" }}>
-          <div style={{ backgroundColor: "#DCDCDC", height: "100%" }}>
+          <div style={{ backgroundColor: "#e5e3de", height: "100%" }}>
             {/* Chat header with refresh button, username and public key are rendered here */}
             <Row style={{ marginRight: "0px" }}>
               <Card
@@ -218,18 +226,27 @@ export function App(props) {
                   margin: "0 0 5px 15px",
                 }}
               >
-                <Card.Header>
-                  {activeChat.friendname} : {activeChat.publicKey}
-                  <Button
-                    style={{ float: "right" }}
+                <Card.Header className="cardHeader">
+                <Button
+                    style={{ height: "25px", border: "1px solid #000", borderRadius: "26px", lineHeight: "0.8", marginRight: "10px", marginTop: "auto", marginBottom: "auto", backgroundColor: "#fff" }}
                     variant="warning"
                     onClick={() => {
                       if (activeChat && activeChat.publicKey)
                         getMessage(activeChat.publicKey);
                     }}
                   >
-                    Refresh
+                    Block
                   </Button>
+                  {activeChat.friendname} : {activeChat.publicKey}              
+                  <Button
+                    style={{height: "40px", borderRadius: "26px", backgroundColor: "#2c7dce", border: "none", color: "#000"}}
+                    onClick={() => {
+                      if (activeChat && activeChat.publicKey)
+                        getMessage(activeChat.publicKey);
+                    }}
+                  >
+                    Refresh
+                  </Button>        
                 </Card.Header>
               </Card>
             </Row>
@@ -244,7 +261,7 @@ export function App(props) {
             <div
               className="SendMessage"
               style={{
-                borderTop: "2px solid black",
+                borderTop: "2px solid #5d5e5d",
                 position: "relative",
                 bottom: "0px",
                 padding: "10px 45px 0 45px",
@@ -268,18 +285,17 @@ export function App(props) {
                     />
                   </Col>
                   <Col>
-                    <Button
-                      className="mb-2"
-                      style={{ float: "right" }}
+                    <button
+                      className="send_btn"
                       onClick={() => {
                         sendMessage(
                           document.getElementById("messageData").value
                         );
                         document.getElementById("messageData").value = "";
                       }}
-                    >
-                      Send
-                    </Button>
+                    >         
+                    <AiOutlineSend />
+                    </button>
                   </Col>
                 </Form.Row>
               </Form>
@@ -288,5 +304,6 @@ export function App(props) {
         </Col>
       </Row>
     </Container>
+    </>
   );
 }

@@ -2,13 +2,13 @@ import React from "react";
 import { useState } from "react";
 import { Button, Modal, Form } from "react-bootstrap";
 
-export function AddNewChat(props) {
+export function BlockMessages(props) {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   return (
     <div
-      className="AddNewChat"
+      className="BlockMessages"
       style={{
         position: "absolute",
         bottom: "0px",
@@ -17,12 +17,12 @@ export function AddNewChat(props) {
         width: "97%",
       }}
     >
-      <button className="new_chat_btn" onClick={handleShow}>
-        + NewChat
-      </button>
+      <Button variant="success" className="mb-2" onClick={handleShow}>
+        + Block
+      </Button>
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title> Add New Friend </Modal.Title>
+          <Modal.Title> Block Messages </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form.Group>
@@ -58,7 +58,7 @@ export function AddNewChat(props) {
               handleClose();
             }}
           >
-            Add Friend
+            Block
           </Button>
         </Modal.Footer>
       </Modal>

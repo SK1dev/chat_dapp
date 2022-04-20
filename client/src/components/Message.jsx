@@ -5,11 +5,13 @@ export function Message(props) {
   return (
     <Row style={{ marginRight: "0px" }}>
       <Card
-        border="success"
         style={{
+          borderRadius: "26px",
+          border: "1px solid #87b1db",
           width: "80%",
           alignSelf: "center",
-          margin: "0 0 5px " + props.marginLeft,
+          margin: "0 0 10px " + props.marginLeft,
+          backgroundColor: props.backgroundColor,
           float: "right",
           right: "0px",
         }}
