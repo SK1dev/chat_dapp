@@ -1,7 +1,7 @@
 import React from "react";
 import { Navbar } from "react-bootstrap";
 
-export function NavBar(props) {
+export const NavBar = props => {
   return (
     <Navbar style={{backgroundColor:"#252728", color: "#fff"}} >
       <Navbar.Brand style={{color: "#fff"}} href="#home">Dapp4Chat</Navbar.Brand>

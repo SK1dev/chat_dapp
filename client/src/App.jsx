@@ -1,7 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Container, Row, Col, Card, Form, Button } from "react-bootstrap";
-import { AiOutlineSend } from "react-icons/ai";
 
 import {
   NavBar,
@@ -16,24 +15,20 @@ import './App.css'
 
 const CONTRACT_ADDRESS = ADDRESS
 
-export function App(props) {
-  const [friends, setFriends] = useState(null);
-  const [myName, setMyName] = useState(null);
-  const [myPublicKey, setMyPublicKey] = useState(null);
-  const [activeChat, setActiveChat] = useState({
-    friendname: null,
-    publicKey: null,
-  });
-  const [activeChatMessages, setActiveChatMessages] = useState(null);
-  const [showConnectButton, setShowConnectButton] = useState("block");
-  const [myContract, setMyContract] = useState(null);
+export const App = () => {
+  const [friends, setFriends] = useState(null)
+  const [myName, setMyName] = useState(null)
+  const [myPublicKey, setMyPublicKey] = useState(null)
+  const [activeChat, setActiveChat] = useState({friendname: null, publicKey: null})
+  const [activeChatMessages, setActiveChatMessages] = useState(null)
+  const [showConnectButton, setShowConnectButton] = useState("block")
+  const [myContract, setMyContract] = useState(null)
 
   // Save the contents of abi in a variable
   const contractABI = abi;
   let provider;
   let signer;
 
-  // Login to Metamask and check the if the user exists else creates one
   async function login() {
     let res = await connectToMetamask();
     if (res === true) {
@@ -66,7 +61,6 @@ export function App(props) {
     }
   }
 
-  // Check if Metamask connects
   async function connectToMetamask() {
     try {
       await window.ethereum.enable();
@@ -121,9 +115,10 @@ export function App(props) {
     });
     setActiveChat({ friendname: nickname, publicKey: friendsPublicKey });
     setActiveChatMessages(messages);
-  }
+  } 
 
   // This executes every time page renders and when myPublicKey or myContract changes
+  // Fetch the data
   useEffect(() => {
     async function loadFriends() {
       let friendList = [];
@@ -131,7 +126,7 @@ export function App(props) {
       try {
         const data = await myContract.getMyFriendList();
         data.forEach((item) => {
-          friendList.push({ publicKey: item[0], name: item[1] });
+          friendList.push({ publicKey: item[0], name: item[1], myPublicKey: item[2] });
         });
       } catch (err) {
         friendList = null;
@@ -140,7 +135,8 @@ export function App(props) {
     }
     loadFriends();
   }, [myPublicKey, myContract]);
-
+    
+   
   // Makes Cards for each Message
   const Messages = activeChatMessages
     ? activeChatMessages.map((message) => {
@@ -176,17 +172,17 @@ export function App(props) {
         );
       })
     : null;
-
+   
   return (
     <>
-    <div className="block_banner"></div>
-    <Container style={{ padding: "0px", border: "1px solid grey" }}>
+    <Container style={{ padding: "0px", border: "1px solid grey", marginTop: "70px" }}>
       {/* This shows the navbar with connect button */}
       <NavBar
         username={myName}
         login={async () => login()}
         showButton={showConnectButton}
       />
+      
       <Row>
         {/* Here the friends list is shown */}
         <Col style={{ paddingRight: "0px", borderRight: "2px solid #5d5e5d" }}>
@@ -227,16 +223,6 @@ export function App(props) {
                 }}
               >
                 <Card.Header className="cardHeader">
-                <Button
-                    style={{ height: "25px", border: "1px solid #000", borderRadius: "26px", lineHeight: "0.8", marginRight: "10px", marginTop: "auto", marginBottom: "auto", backgroundColor: "#fff" }}
-                    variant="warning"
-                    onClick={() => {
-                      if (activeChat && activeChat.publicKey)
-                        getMessage(activeChat.publicKey);
-                    }}
-                  >
-                    Block
-                  </Button>
                   {activeChat.friendname} : {activeChat.publicKey}              
                   <Button
                     style={{height: "40px", borderRadius: "26px", backgroundColor: "#2c7dce", border: "none", color: "#000"}}
@@ -285,17 +271,6 @@ export function App(props) {
                     />
                   </Col>
                   <Col>
-                    <button
-                      className="send_btn"
-                      onClick={() => {
-                        sendMessage(
-                          document.getElementById("messageData").value
-                        );
-                        document.getElementById("messageData").value = "";
-                      }}
-                    >         
-                    <AiOutlineSend />
-                    </button>
                   </Col>
                 </Form.Row>
               </Form>

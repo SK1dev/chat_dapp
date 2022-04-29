@@ -12,6 +12,7 @@ contract ChatDatabase {
     struct friend {
         address pubkey;
         string name;
+        address sender;
     }
 
     struct message {
@@ -21,8 +22,7 @@ contract ChatDatabase {
     }
 
     mapping(address => user) userList;
-
-    mapping(bytes32 => message[]) allMessages; 
+    mapping(bytes32 => message[]) allMessages; // key : Hash(user1,user2)
 
     function checkUserExists(address pubkey) public view returns(bool) {
         return bytes(userList[pubkey].name).length > 0;
@@ -45,8 +45,8 @@ contract ChatDatabase {
         require(msg.sender!=friend_key, "Users cannot add themselves as friends!");
         require(checkAlreadyFriends(msg.sender,friend_key)==false, "These users are already friends!");
 
-        _addFriend(msg.sender, friend_key, name);
-        _addFriend(friend_key, msg.sender, userList[msg.sender].name);
+        _addFriend(msg.sender, friend_key, name, msg.sender);
+        _addFriend(friend_key, msg.sender, userList[msg.sender].name, msg.sender);
     }
 
     function checkAlreadyFriends(address pubkey1, address pubkey2) internal view returns(bool) {
@@ -66,8 +66,8 @@ contract ChatDatabase {
         return false;
     }
 
-    function _addFriend(address me, address friend_key, string memory name) internal {
-        friend memory newFriend = friend(friend_key,name);
+    function _addFriend(address me, address friend_key, string memory name, address sender) internal {
+        friend memory newFriend = friend(friend_key,name,msg.sender);
         userList[me].friendList.push(newFriend);
     }
 
@@ -75,7 +75,8 @@ contract ChatDatabase {
         return userList[msg.sender].friendList;
     }
 
-
+    // Returns a unique code for the channel created between the two users
+    // Hash(key1,key2) where key1 is lexicographically smaller than key2
     function _getChatCode(address pubkey1, address pubkey2) internal pure returns(bytes32) {
         if(pubkey1 < pubkey2)
             return keccak256(abi.encodePacked(pubkey1, pubkey2));

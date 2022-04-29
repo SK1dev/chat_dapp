@@ -1,7 +1,7 @@
 import React from "react";
 import { Row, Card } from "react-bootstrap";
 
-export function Message(props) {
+export const Message = props => {
   return (
     <Row style={{ marginRight: "0px" }}>
       <Card
